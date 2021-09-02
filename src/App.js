@@ -21,9 +21,36 @@ function formatProperty(property) {
   }
 }
 
-console.log( fetchProperties() );
+
+
+
+// async function func2() {
+//   const res = await formatProperty(func());
+//   return(res);
+// }
+
+// const a = func2();
+// console.log(a);
 
 export default function App() {
+
+  const [property, setProperty] = React.useState();
+
+  async function func() {
+    try {
+      const res = await fetchProperties();
+      setProperty(res);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  func();
+
+  if(property) {
+    console.log(formatProperty(property[3]));
+  }
+
   return (
     <div className="App">
       <h1>Характеристики</h1>
@@ -37,24 +64,14 @@ export default function App() {
         характеристики есть функция <code>formatProperty</code> в{" "}
         <code>App.js</code>.
       </p>
-      <div 
-        style={{ 
-          borderColor: 'black',
-          borderStyle: 'solid', 
-          width: '500px', 
-          height: '284px',
-          marginLeft: 'auto',
-          marginRight: 'auto'
-        }}
-      >
-        <div
-          style={{ 
-            borderColor: 'black',
-            borderStyle: 'solid', 
-            margin: '10px'
-          }}
-        >
-
+      <div className="a">
+        <div className="b">
+          <li className="c"></li>
+          <li className="d"></li>
+          <li className="e"></li>
+          <li className="f"></li>
+          <li className="c"></li>
+          <li className="f"></li>
         </div>
       </div>
     </div>

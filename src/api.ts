@@ -69,7 +69,7 @@ interface PropertyShape<T, V> {
 }
 
 type Property =
-  // | PropertyShape<"group", Property[]>
+  | PropertyShape<"group", Property[]>
   | PropertyShape<"string", string>
   | PropertyShape<"number", number>
   | PropertyShape<"range", { from: number; to: number }>
@@ -82,5 +82,4 @@ function fetchProperties(): Promise<Property[]> {
 
 // export type { Property };
 export { fetchProperties };  
-
 
