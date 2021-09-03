@@ -18,25 +18,16 @@ function formatProperty(property) {
     }
     default:
       return JSON.stringify(property.value);
+      // return property.value
   }
 }
 
-
-
-
-// async function func2() {
-//   const res = await formatProperty(func());
-//   return(res);
-// }
-
-// const a = func2();
-// console.log(a);
-
 export default function App() {
-
   const [property, setProperty] = React.useState();
+  // let arrayOfValues = [];
 
-  async function func() {
+  //get data from api
+  async function fetchData() {
     try {
       const res = await fetchProperties();
       setProperty(res);
@@ -45,11 +36,38 @@ export default function App() {
     }
   }
 
-  func();
+  fetchData();
 
-  if(property) {
-    console.log(formatProperty(property[3]));
+  //get array from fetched data
+  function getArray(a) {
+    // let margin = 0;
+    console.log(a);
+    if(a && typeof a !== 'string') {
+      a.forEach(function(entry) {
+        if(entry.type !== 'group') {
+          // console.log(margin);
+          // const color = entry.id % 2;
+          // console.log(entry);
+          // console.log(a.indexOf(entry));
+          // console.log(entry.name);
+          // console.log(formatProperty(entry));
+          // return ([<li className='e'></li>]);
+        } else {
+          // console.log(entry.name);
+          // console.log(JSON.parse(formatProperty(entry)));
+            getArray(JSON.parse(formatProperty(entry)));
+          // console.log('------', entry.name);
+          // console.log('______', entry.value);
+          // console.log('entry', getArray(formatProperty(entry)));
+        }
+      });
+    }
+    
   }
+
+  React.useEffect(() => {
+    getArray(property);
+  }, [property])
 
   return (
     <div className="App">
@@ -64,14 +82,17 @@ export default function App() {
         характеристики есть функция <code>formatProperty</code> в{" "}
         <code>App.js</code>.
       </p>
-      <div className="a">
-        <div className="b">
-          <li className="c"></li>
-          <li className="d"></li>
-          <li className="e"></li>
-          <li className="f"></li>
-          <li className="c"></li>
-          <li className="f"></li>
+      <div className='a'>
+        <div className='b'>
+          {console.log(property)}
+          {!!property && property.map(item => (
+            <li 
+              className='c'
+              key={item.type}
+            >
+
+            </li>
+          ))}
         </div>
       </div>
     </div>
