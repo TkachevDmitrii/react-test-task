@@ -2,6 +2,9 @@ import React from "react";
 import { fetchProperties } from "./api";
 import "./styles.css";
 
+import List from "./components/List";
+
+
 function formatProperty(property) {
   switch (property.type) {
     case "string":
@@ -18,56 +21,57 @@ function formatProperty(property) {
     }
     default:
       return JSON.stringify(property.value);
-      // return property.value
   }
 }
 
 export default function App() {
   const [property, setProperty] = React.useState();
-  // let arrayOfValues = [];
+  const arr = [];
+  let level = 0;
+  let groupCount = 0;
+  let groupName = null;
+  
 
-  //get data from api
   async function fetchData() {
     try {
-      const res = await fetchProperties();
-      setProperty(res);
+      setProperty(await fetchProperties());
+
     } catch(err) {
       console.log(err);
     }
   }
-
-  fetchData();
-
-  //get array from fetched data
-  function getArray(a) {
-    // let margin = 0;
-    console.log(a);
-    if(a && typeof a !== 'string') {
-      a.forEach(function(entry) {
+  
+  function getArray(property) {
+    if(property) {
+      property.map(entry => {
         if(entry.type !== 'group') {
-          // console.log(margin);
-          // const color = entry.id % 2;
-          // console.log(entry);
-          // console.log(a.indexOf(entry));
-          // console.log(entry.name);
-          // console.log(formatProperty(entry));
-          // return ([<li className='e'></li>]);
-        } else {
-          // console.log(entry.name);
-          // console.log(JSON.parse(formatProperty(entry)));
+          if(level > 0) {
+            if(groupCount > 0) {
+              groupCount -= 1;
+              arr.push({margin: level, groupName: groupName, name: entry.name, value: formatProperty(entry)})
+              
+            } else {
+              arr.push({margin: level, groupName: groupName, name: entry.name, value: formatProperty(entry)})
+              level = 1;
+            }
+          } else {
+            groupCount -= 1;
+            level = 1
+            arr.push({margin: level, groupName: groupName, name: entry.name, value: formatProperty(entry)})
+          }
+          groupName = null;
+        } else {  
+            groupCount = entry.value.length - 1;
+            level += 1;
+            groupName = entry.name;
             getArray(JSON.parse(formatProperty(entry)));
-          // console.log('------', entry.name);
-          // console.log('______', entry.value);
-          // console.log('entry', getArray(formatProperty(entry)));
         }
       });
     }
-    
   }
 
-  React.useEffect(() => {
-    getArray(property);
-  }, [property])
+  fetchData();
+  getArray(property);
 
   return (
     <div className="App">
@@ -82,19 +86,7 @@ export default function App() {
         характеристики есть функция <code>formatProperty</code> в{" "}
         <code>App.js</code>.
       </p>
-      <div className='a'>
-        <div className='b'>
-          {console.log(property)}
-          {!!property && property.map(item => (
-            <li 
-              className='c'
-              key={item.type}
-            >
-
-            </li>
-          ))}
-        </div>
-      </div>
+      {arr.length !== 0 && <List arr={arr}/>}
     </div>
   );
 }
